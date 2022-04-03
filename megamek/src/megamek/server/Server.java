@@ -422,6 +422,8 @@ public class Server implements Runnable {
         // display server start text
         LogManager.getLogger().info("s: starting a new server...");
 
+        DBManager.initiateDB();
+
         try {
             StringBuilder sb = new StringBuilder();
             String host = InetAddress.getLocalHost().getHostName();

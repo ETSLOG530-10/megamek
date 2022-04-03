@@ -12,6 +12,10 @@ allprojects {
         mavenCentral()
         maven { url 'https://jitpack.io' } // SerialKiller master branch
     }
+
+    dependencies {
+        compile group:'org.xerial', name:'sqlite-jdbc', version:'3.8.11.2'
+    }
 }
 
 subprojects {
