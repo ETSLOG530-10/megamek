@@ -16,6 +16,7 @@ package megamek.server.victory;
 import megamek.common.Game;
 import megamek.common.Player;
 import megamek.common.Report;
+import megamek.server.elo.EloStrategy;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -34,6 +35,7 @@ public class VictoryResult {
     protected Map<Integer, Double> playerScore = new HashMap<>();
     protected Map<Integer, Double> teamScore = new HashMap<>();
     protected double hiScore = 0;
+    protected EloStrategy eloStrategy;
 
     protected VictoryResult(boolean win) {
         this.victory = win;
@@ -50,6 +52,12 @@ public class VictoryResult {
             addTeamScore(team, 1.0);
         }
     }
+
+    protected VictoryResult(EloStrategy eloStrategy) {
+        this.victory = true;
+        this.eloStrategy = eloStrategy;
+        tr = new Throwable();
+    }
     
     protected static VictoryResult noResult() {
         return new VictoryResult(false, Player.PLAYER_NONE, Player.TEAM_NONE);
@@ -57,6 +65,10 @@ public class VictoryResult {
     
     protected static VictoryResult drawResult() {
         return new VictoryResult(true, Player.PLAYER_NONE, Player.TEAM_NONE);
+    }
+
+    public EloStrategy getEloStrategy() {
+        return eloStrategy;
     }
 
     private int getWinningPlayerOrTeam(Map<Integer, Double> entities, int defaultEntity) {

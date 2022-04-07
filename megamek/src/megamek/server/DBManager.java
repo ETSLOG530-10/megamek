@@ -60,7 +60,7 @@ public class DBManager {
         }
     }
 
-    private static void addOrUpdateRow(String username, int elo) {
+    public static void addOrUpdateRow(String username, Double elo) {
         Connection c = null;
         Statement stmt = null;
 
@@ -81,6 +81,37 @@ public class DBManager {
             System.exit(0);
         }
         System.out.println("Records created successfully");
+    }
+
+    public static Double getFromTable(String username) {
+        Double value = -1.0;
+        Connection c = null;
+        Statement stmt = null;
+
+        try {
+            c = connect();
+            c.setAutoCommit(false);
+
+            stmt = c.createStatement();
+
+            String sql = "SELECT ELO FROM elo_score " +
+                    "WHERE USERNAME = '"+username+"';";
+            ResultSet query = stmt.executeQuery(sql);
+            query.next();
+            value = query.getDouble("ELO");
+
+            stmt.close();
+            c.commit();
+            c.close();
+        } catch ( Exception e ) {
+            MegaMek.printToOut(e.getMessage());
+            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+            System.exit(0);
+        }
+        MegaMek.printToOut("Records created successfully");
+        System.out.println("Records created successfully");
+
+        return value;
     }
 
     public static HashMap<String, Integer> getAll() {
