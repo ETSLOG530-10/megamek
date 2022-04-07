@@ -9,8 +9,6 @@ public class EloManager {
     private static final double DEFAULT_ELO = 500;
 
     public static void updateElo(Game game) {
-        DBManager.initiateDB();
-
         VictoryResult victoryResult = game.getVictoryResult();
         EloStrategy strategy = victoryResult.getEloStrategy();
         for (Player player: game.getPlayersVector()) {
@@ -29,6 +27,9 @@ public class EloManager {
                 victoryResult.addPlayerScore(player.getId(), initialElo);
 
             victoryResult.addPlayerScore(player.getId(), eloModification);
+
+            // Insert new elo into database
+            DBManager.addOrUpdateRow(player.getName(), eloModification);
         }
     }
 }
