@@ -422,6 +422,7 @@ public class Server implements Runnable {
         // display server start text
         LogManager.getLogger().info("s: starting a new server...");
 
+        // Verifie la connection a la DB et la creation de la table si necessaire
         DBManager.initiateDB();
 
         try {

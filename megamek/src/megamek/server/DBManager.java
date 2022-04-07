@@ -10,9 +10,6 @@ public class DBManager {
 
     public static void initiateDB() {
         createEloTable();
-        addOrUpdateRow("Simon", 2);
-        //getAll();
-        getEloByUsername("Simon");
     }
 
     private static Connection connect() {
