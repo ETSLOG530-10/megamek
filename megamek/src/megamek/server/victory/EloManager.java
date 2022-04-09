@@ -1,9 +1,8 @@
-package megamek.server.elo;
+package megamek.server.victory;
 
 import megamek.common.Game;
 import megamek.common.Player;
 import megamek.server.DBManager;
-import megamek.server.victory.VictoryResult;
 
 public class EloManager {
     private static final double DEFAULT_ELO = 500;

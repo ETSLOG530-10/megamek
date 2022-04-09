@@ -16,7 +16,6 @@ package megamek.server.victory;
 import megamek.common.Game;
 import megamek.common.Player;
 import megamek.common.Report;
-import megamek.server.elo.EloStrategy;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
