@@ -52,7 +52,6 @@ import megamek.common.weapons.infantry.InfantryWeapon;
 import megamek.common.weapons.other.TSEMPWeapon;
 import megamek.server.commands.*;
 import megamek.server.victory.VictoryResult;
-import org.apache.commons.lang.NotImplementedException;
 import org.apache.logging.log4j.LogManager;
 
 import java.io.*;
@@ -8941,56 +8940,8 @@ public class Server implements Runnable {
             r.addDesc(entity);
             addReport(r);
 
-            // roll
-            final int diceRoll = Compute.d6(2);
-            r = new Report(2130);
-            r.subject = entity.getId();
-            r.add(rollTarget.getValueAsString());
-            r.add(rollTarget.getDesc());
-            r.add(diceRoll);
-            if (diceRoll < rollTarget.getValue()) {
-                r.choose(false);
-                addReport(r);
-            } else {
-                // Dislodged swarmers don't get turns.
-                game.removeTurnFor(swarmer);
-                send(createTurnVectorPacket());
 
-                // Update the report and the swarmer's status.
-                r.choose(true);
-                addReport(r);
-                entity.setSwarmAttackerId(Entity.NONE);
-                swarmer.setSwarmTargetId(Entity.NONE);
-
-                Hex curHex = game.getBoard().getHex(curPos);
-
-                // Did the infantry fall into water?
-                if (curHex.terrainLevel(Terrains.WATER) > 0) {
-                    // Swarming infantry die.
-                    swarmer.setPosition(curPos);
-                    r = new Report(2135);
-                    r.subject = entity.getId();
-                    r.indent();
-                    r.addDesc(swarmer);
-                    addReport(r);
-                    addReport(destroyEntity(swarmer, "a watery grave", false));
-                } else {
-                    // Swarming infantry take a 3d6 point hit.
-                    // ASSUMPTION : damage should not be doubled.
-                    r = new Report(2140);
-                    r.subject = entity.getId();
-                    r.indent();
-                    r.addDesc(swarmer);
-                    r.add("3d6");
-                    addReport(r);
-                    addReport(damageEntity(swarmer,
-                            swarmer.rollHitLocation(ToHitData.HIT_NORMAL, ToHitData.SIDE_FRONT),
-                            Compute.d6(3)));
-                    addNewLines();
-                    swarmer.setPosition(curPos);
-                }
-                entityUpdate(swarmerId);
-            } // End successful-PSR
+            r = rollDice(r, entity, rollTarget, swarmer, curPos);
 
         } // End try-to-dislodge-swarmers
 
@@ -9141,54 +9092,8 @@ public class Server implements Runnable {
                 r.addDesc(entity);
                 addReport(r);
 
-                // roll
-                final int diceRoll = Compute.d6(2);
-                r = new Report(2130);
-                r.subject = entity.getId();
-                r.add(rollTarget.getValueAsString());
-                r.add(rollTarget.getDesc());
-                r.add(diceRoll);
-                if (diceRoll < rollTarget.getValue()) {
-                    r.choose(false);
-                    addReport(r);
-                } else {
-                    // Dislodged swarmers don't get turns.
-                    game.removeTurnFor(swarmer);
-                    send(createTurnVectorPacket());
 
-                    // Update the report and the swarmer's status.
-                    r.choose(true);
-                    addReport(r);
-                    entity.setSwarmAttackerId(Entity.NONE);
-                    swarmer.setSwarmTargetId(Entity.NONE);
-
-                    // Did the infantry fall into water?
-                    if (curHex.terrainLevel(Terrains.WATER) > 0) {
-                        // Swarming infantry die.
-                        swarmer.setPosition(curPos);
-                        r = new Report(2135);
-                        r.subject = entity.getId();
-                        r.indent();
-                        r.addDesc(swarmer);
-                        addReport(r);
-                        addReport(destroyEntity(swarmer, "a watery grave", false));
-                    } else {
-                        // Swarming infantry take a 3d6 point hit.
-                        // ASSUMPTION : damage should not be doubled.
-                        r = new Report(2140);
-                        r.subject = entity.getId();
-                        r.indent();
-                        r.addDesc(swarmer);
-                        r.add("3d6");
-                        addReport(r);
-                        addReport(damageEntity(swarmer,
-                                swarmer.rollHitLocation(ToHitData.HIT_NORMAL, ToHitData.SIDE_FRONT),
-                                Compute.d6(3)));
-                        addNewLines();
-                        swarmer.setPosition(curPos);
-                    }
-                    entityUpdate(swarmerId);
-                } // End successful-PSR
+                r = rollDice(r, entity, rollTarget, swarmer, curPos);
 
             } // End try-to-dislodge-swarmers
 
@@ -35588,5 +35493,59 @@ public class Server implements Runnable {
 
     public Set<Coords> getHexUpdateSet() {
         return hexUpdateSet;
+    }
+
+    public Report rollDice(Report r, Entity entity, PilotingRollData rollTarget, Entity swarmer, Coords curPos) {
+        // roll
+        final int diceRoll = Compute.d6(2);
+        r = new Report(2130);
+        r.subject = entity.getId();
+        r.add(rollTarget.getValueAsString());
+        r.add(rollTarget.getDesc());
+        r.add(diceRoll);
+        if (diceRoll < rollTarget.getValue()) {
+            r.choose(false);
+            addReport(r);
+        } else {
+            // Dislodged swarmers don't get turns.
+            game.removeTurnFor(swarmer);
+            send(createTurnVectorPacket());
+
+            // Update the report and the swarmer's status.
+            r.choose(true);
+            addReport(r);
+            entity.setSwarmAttackerId(Entity.NONE);
+            swarmer.setSwarmTargetId(Entity.NONE);
+
+            Hex curHex = game.getBoard().getHex(curPos);
+
+            // Did the infantry fall into water?
+            if (curHex.terrainLevel(Terrains.WATER) > 0) {
+                // Swarming infantry die.
+                swarmer.setPosition(curPos);
+                r = new Report(2135);
+                r.subject = entity.getId();
+                r.indent();
+                r.addDesc(swarmer);
+                addReport(r);
+                addReport(destroyEntity(swarmer, "a watery grave", false));
+            } else {
+                // Swarming infantry take a 3d6 point hit.
+                // ASSUMPTION : damage should not be doubled.
+                r = new Report(2140);
+                r.subject = entity.getId();
+                r.indent();
+                r.addDesc(swarmer);
+                r.add("3d6");
+                addReport(r);
+                addReport(damageEntity(swarmer,
+                        swarmer.rollHitLocation(ToHitData.HIT_NORMAL, ToHitData.SIDE_FRONT),
+                        Compute.d6(3)));
+                addNewLines();
+                swarmer.setPosition(curPos);
+            }
+            entityUpdate(swarmer.getSwarmAttackerId());
+        } // End successful-PSR
+        return r;
     }
 }
