@@ -227,6 +227,8 @@ public class VictoryResult {
                 // single team won
                 game.setVictoryPlayerId(wonPlayer);
                 game.setVictoryTeam(wonTeam);
+                // Update ELO for all players
+                EloManager.updateElo(game);
             }
         } else {
             game.cancelVictory();
