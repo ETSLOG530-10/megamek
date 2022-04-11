@@ -9,6 +9,7 @@ public class EloManager {
 
     public static void updateElo(Game game) {
         VictoryResult victoryResult = game.getVictoryResult();
+        if (victoryResult == null) return;
         EloStrategy strategy = victoryResult.getEloStrategy();
         for (Player player: game.getPlayersVector()) {
             Double eloModification;

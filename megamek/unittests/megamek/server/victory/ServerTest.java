@@ -32,6 +32,8 @@ public class ServerTest {
         Mockito.when(testGame.getAttacks()).thenReturn(Collections.emptyEnumeration());
         Mockito.when(testGame.getForces()).thenReturn(testForces);
         Mockito.when(testGame.getOptions()).thenReturn(new GameOptions());
+        Mockito.when(testGame.getForces()).thenReturn(testForces);
+        Mockito.when(testGame.getPlayersVector()).thenReturn(new Vector<>());
         return testGame;
     }
 

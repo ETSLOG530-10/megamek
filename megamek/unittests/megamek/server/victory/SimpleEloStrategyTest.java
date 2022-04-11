@@ -4,10 +4,7 @@ import megamek.common.Game;
 import megamek.common.Player;
 import megamek.common.force.Forces;
 import megamek.common.options.GameOptions;
-import megamek.server.Server;
-import megamek.server.victory.VictoryResult;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mockito;
@@ -16,8 +13,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Vector;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @RunWith(value = JUnit4.class)
 public class SimpleEloStrategyTest {
@@ -35,20 +31,20 @@ public class SimpleEloStrategyTest {
     }
 
     @Test
-    public void testGetVictoryPoints() {
+    public void testGetVictoryPoints() throws IOException {
         EloStrategy strategy = new SimpleEloStrategy();
 
         Game testGame = createMockedGame();
 
-        Assertions.assertEquals(1.0, strategy.getVictoryPoints(0.0, testGame, new Player(0, "Test")));
+        assertEquals(1.0, strategy.getVictoryPoints(0.0, testGame, new Player(0, "Test")), 0.001);
     }
 
     @Test
-    public void testGetDefeatPoints() {
+    public void testGetDefeatPoints() throws IOException {
         EloStrategy strategy = new SimpleEloStrategy();
 
         Game testGame = createMockedGame();
 
-        Assertions.assertEquals(0.0, strategy.getVictoryPoints(1.0, testGame, new Player(0, "Test")));
+        assertEquals(0.0, strategy.getDefeatPoints(1.0, testGame, new Player(0, "Test")), 0.001);
     }
 }
