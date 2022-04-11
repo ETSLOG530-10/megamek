@@ -7,9 +7,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mockito;
 
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @RunWith(value = JUnit4.class)
 public class VictoryResultTest {
@@ -93,6 +91,12 @@ public class VictoryResultTest {
         VictoryResult victoryResult5 = new VictoryResult(true);
         victoryResult5.addPlayerScore(1, 100);
         victoryResult5.addTeamScore(1, 100);
+        assertTrue(victoryResult5.isWinningTeam(1));
+        assertTrue(victoryResult5.isWinningPlayer(1));
+        assertEquals(100, victoryResult5.getPlayerScore(1), 0.0001);
+        assertEquals(0, victoryResult5.getPlayerScore(999), 0.0001);
+        assertEquals(100, victoryResult5.getTeamScore(1), 0.0001);
+        assertEquals(0, victoryResult5.getTeamScore(999), 0.0001);
         assertSame(2, victoryResult5.processVictory(gameMock).size());
 
         // Draw result
@@ -100,6 +104,14 @@ public class VictoryResultTest {
         victoryResult6.addPlayerScore(1, 100);
         victoryResult6.addPlayerScore(2, 100);
         assertTrue(victoryResult6.processVictory(gameMock).isEmpty());
+    }
+
+    @Test
+    public void testToString() {
+        VictoryResult victoryResult = new VictoryResult(true);
+        String resultString = victoryResult.toString();
+        assertNotNull(resultString);
+        assertNotEquals("", resultString);
     }
 
 }
